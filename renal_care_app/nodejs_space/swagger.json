@@ -1,0 +1,908 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/api/auth/login": {
+      "post": {
+        "operationId": "AuthController_login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/auth/me": {
+      "get": {
+        "operationId": "AuthController_me",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MeResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/patients/me": {
+      "get": {
+        "operationId": "PatientsController_getProfile",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PatientProfileDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Patients"
+        ]
+      }
+    },
+    "/api/patients/me/clinical-history": {
+      "get": {
+        "operationId": "PatientsController_getClinicalHistory",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClinicalHistoryDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Patients"
+        ]
+      }
+    },
+    "/api/patients/me/treatment": {
+      "get": {
+        "operationId": "PatientsController_getTreatment",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TreatmentInfoDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Patients"
+        ]
+      }
+    },
+    "/api/patients/me/diet": {
+      "get": {
+        "operationId": "PatientsController_getDiet",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DietRecommendationsDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Patients"
+        ]
+      }
+    },
+    "/api/patients/me/ambulance": {
+      "get": {
+        "operationId": "PatientsController_getAmbulance",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AmbulanceStatusDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Patients"
+        ]
+      }
+    },
+    "/api/contact-messages": {
+      "post": {
+        "operationId": "ContactController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateContactMessageDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactMessageResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Contact"
+        ]
+      },
+      "get": {
+        "operationId": "ContactController_list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactMessagesListDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Contact"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "Api",
+    "description": "",
+    "version": "0.1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "schemas": {
+      "LoginDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 4
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "UserDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "name"
+        ]
+      },
+      "LoginResponseDto": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          },
+          "user": {
+            "$ref": "#/components/schemas/UserDto"
+          }
+        },
+        "required": [
+          "token",
+          "user"
+        ]
+      },
+      "MeResponseDto": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "$ref": "#/components/schemas/UserDto"
+          }
+        },
+        "required": [
+          "user"
+        ]
+      },
+      "PatientProfileDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "age": {
+            "type": "number"
+          },
+          "medicalRecordNumber": {
+            "type": "string"
+          },
+          "modality": {
+            "type": "string"
+          },
+          "bloodType": {
+            "type": "string"
+          },
+          "primaryDiagnosis": {
+            "type": "string"
+          },
+          "treatmentStartDate": {
+            "type": "string"
+          },
+          "attendingDoctor": {
+            "type": "string"
+          },
+          "avatarInitials": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "userId",
+          "fullName",
+          "age",
+          "medicalRecordNumber",
+          "modality",
+          "bloodType",
+          "primaryDiagnosis",
+          "treatmentStartDate",
+          "attendingDoctor",
+          "avatarInitials"
+        ]
+      },
+      "LabValueDto": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "number"
+          },
+          "unit": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "value",
+          "unit",
+          "status"
+        ]
+      },
+      "LatestLabsDto": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string"
+          },
+          "creatinine": {
+            "$ref": "#/components/schemas/LabValueDto"
+          },
+          "urea": {
+            "$ref": "#/components/schemas/LabValueDto"
+          },
+          "potassium": {
+            "$ref": "#/components/schemas/LabValueDto"
+          },
+          "phosphorus": {
+            "$ref": "#/components/schemas/LabValueDto"
+          },
+          "hemoglobin": {
+            "$ref": "#/components/schemas/LabValueDto"
+          }
+        },
+        "required": [
+          "date",
+          "creatinine",
+          "urea",
+          "potassium",
+          "phosphorus",
+          "hemoglobin"
+        ]
+      },
+      "LabEvolutionPointDto": {
+        "type": "object",
+        "properties": {
+          "month": {
+            "type": "string"
+          },
+          "value": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "month",
+          "value"
+        ]
+      },
+      "LabEvolutionDto": {
+        "type": "object",
+        "properties": {
+          "creatinine": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LabEvolutionPointDto"
+            }
+          },
+          "urea": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LabEvolutionPointDto"
+            }
+          },
+          "potassium": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LabEvolutionPointDto"
+            }
+          }
+        },
+        "required": [
+          "creatinine",
+          "urea",
+          "potassium"
+        ]
+      },
+      "AppointmentDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string"
+          },
+          "time": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "doctor": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "date",
+          "time",
+          "type",
+          "doctor"
+        ]
+      },
+      "ClinicalHistoryDto": {
+        "type": "object",
+        "properties": {
+          "primaryDiagnosis": {
+            "type": "string"
+          },
+          "treatmentStartDate": {
+            "type": "string"
+          },
+          "bloodType": {
+            "type": "string"
+          },
+          "attendingDoctor": {
+            "type": "string"
+          },
+          "latestLabs": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/LatestLabsDto"
+              }
+            ]
+          },
+          "labEvolution": {
+            "$ref": "#/components/schemas/LabEvolutionDto"
+          },
+          "appointments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AppointmentDto"
+            }
+          }
+        },
+        "required": [
+          "primaryDiagnosis",
+          "treatmentStartDate",
+          "bloodType",
+          "attendingDoctor",
+          "latestLabs",
+          "labEvolution",
+          "appointments"
+        ]
+      },
+      "ScheduleItemDto": {
+        "type": "object",
+        "properties": {
+          "day": {
+            "type": "string"
+          },
+          "time": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "day",
+          "time"
+        ]
+      },
+      "VascularAccessDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          },
+          "datePlaced": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "location",
+          "datePlaced"
+        ]
+      },
+      "HemodialysisDto": {
+        "type": "object",
+        "properties": {
+          "schedule": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ScheduleItemDto"
+            }
+          },
+          "sessionDuration": {
+            "type": "string"
+          },
+          "vascularAccess": {
+            "$ref": "#/components/schemas/VascularAccessDto"
+          },
+          "dryWeight": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "schedule",
+          "sessionDuration",
+          "vascularAccess",
+          "dryWeight"
+        ]
+      },
+      "ExchangeDto": {
+        "type": "object",
+        "properties": {
+          "time": {
+            "type": "string"
+          },
+          "volume": {
+            "type": "string"
+          },
+          "dwellTime": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "time",
+          "volume",
+          "dwellTime"
+        ]
+      },
+      "PeritonealDialysisDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "exchanges": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExchangeDto"
+            }
+          },
+          "solutions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "type",
+          "exchanges",
+          "solutions"
+        ]
+      },
+      "MedicationDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "dose": {
+            "type": "string"
+          },
+          "frequency": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "dose",
+          "frequency"
+        ]
+      },
+      "TransplantDto": {
+        "type": "object",
+        "properties": {
+          "transplantDate": {
+            "type": "string"
+          },
+          "donorType": {
+            "type": "string"
+          },
+          "medications": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MedicationDto"
+            }
+          },
+          "nextReview": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "transplantDate",
+          "donorType",
+          "medications",
+          "nextReview"
+        ]
+      },
+      "TreatmentInfoDto": {
+        "type": "object",
+        "properties": {
+          "modality": {
+            "type": "string"
+          },
+          "hemodialysis": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/HemodialysisDto"
+              }
+            ]
+          },
+          "peritonealDialysis": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PeritonealDialysisDto"
+              }
+            ]
+          },
+          "transplant": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TransplantDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "modality",
+          "hemodialysis",
+          "peritonealDialysis",
+          "transplant"
+        ]
+      },
+      "FluidRestrictionDto": {
+        "type": "object",
+        "properties": {
+          "dailyLimit": {
+            "type": "string"
+          },
+          "tips": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "dailyLimit",
+          "tips"
+        ]
+      },
+      "MineralInfoDto": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "string"
+          },
+          "tips": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "foodExamples": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "limit",
+          "tips",
+          "foodExamples"
+        ]
+      },
+      "MineralsDto": {
+        "type": "object",
+        "properties": {
+          "potassium": {
+            "$ref": "#/components/schemas/MineralInfoDto"
+          },
+          "phosphorus": {
+            "$ref": "#/components/schemas/MineralInfoDto"
+          },
+          "sodium": {
+            "$ref": "#/components/schemas/MineralInfoDto"
+          }
+        },
+        "required": [
+          "potassium",
+          "phosphorus",
+          "sodium"
+        ]
+      },
+      "DietRecommendationsDto": {
+        "type": "object",
+        "properties": {
+          "modality": {
+            "type": "string"
+          },
+          "headline": {
+            "type": "string"
+          },
+          "fluidRestriction": {
+            "$ref": "#/components/schemas/FluidRestrictionDto"
+          },
+          "recommendedFoods": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "foodsToAvoid": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "minerals": {
+            "$ref": "#/components/schemas/MineralsDto"
+          },
+          "practicalTips": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "modality",
+          "headline",
+          "fluidRestriction",
+          "recommendedFoods",
+          "foodsToAvoid",
+          "minerals",
+          "practicalTips"
+        ]
+      },
+      "CoordinatesDto": {
+        "type": "object",
+        "properties": {
+          "lat": {
+            "type": "number"
+          },
+          "lng": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "lat",
+          "lng"
+        ]
+      },
+      "AmbulanceStatusDto": {
+        "type": "object",
+        "properties": {
+          "available": {
+            "type": "boolean"
+          },
+          "status": {
+            "type": "string"
+          },
+          "estimatedMinutes": {
+            "type": "number"
+          },
+          "distanceKm": {
+            "type": "number"
+          },
+          "hospitalLocation": {
+            "$ref": "#/components/schemas/CoordinatesDto"
+          },
+          "ambulanceLocation": {
+            "$ref": "#/components/schemas/CoordinatesDto"
+          },
+          "waypoints": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CoordinatesDto"
+            }
+          }
+        },
+        "required": [
+          "available",
+          "status",
+          "estimatedMinutes",
+          "distanceKm",
+          "hospitalLocation",
+          "ambulanceLocation",
+          "waypoints"
+        ]
+      },
+      "CreateContactMessageDto": {
+        "type": "object",
+        "properties": {
+          "subject": {
+            "type": "string",
+            "minLength": 1
+          },
+          "message": {
+            "type": "string",
+            "minLength": 10
+          }
+        },
+        "required": [
+          "subject",
+          "message"
+        ]
+      },
+      "ContactMessageResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "subject": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "subject",
+          "message",
+          "status",
+          "createdAt"
+        ]
+      },
+      "ContactMessagesListDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContactMessageResponseDto"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ]
+      }
+    }
+  }
+}

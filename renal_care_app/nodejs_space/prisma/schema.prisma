@@ -1,0 +1,196 @@
+generator client {
+    provider = "prisma-client-js"
+    binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
+
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model user {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      String   @default("patient")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  patient   patient?
+
+  @@map("users")
+}
+
+model patient {
+  id                  String   @id @default(uuid())
+  userId              String   @unique @map("user_id")
+  fullName            String   @map("full_name")
+  age                 Int
+  medicalRecordNumber String   @unique @map("medical_record_number")
+  modality            String
+  bloodType           String   @map("blood_type")
+  primaryDiagnosis    String   @map("primary_diagnosis")
+  treatmentStartDate  DateTime @map("treatment_start_date")
+  attendingDoctor     String   @map("attending_doctor")
+  createdAt           DateTime @default(now()) @map("created_at")
+  updatedAt           DateTime @updatedAt @map("updated_at")
+
+  user                     user                      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  labResults               lab_result[]
+  appointments             appointment[]
+  hemodialysisTreatment    hemodialysis_treatment?
+  peritonealTreatment      peritoneal_treatment?
+  transplantTreatment      transplant_treatment?
+  contactMessages          contact_message[]
+
+  @@map("patients")
+}
+
+model lab_result {
+  id         String   @id @default(uuid())
+  patientId  String   @map("patient_id")
+  date       DateTime
+  creatinine Float
+  urea       Float
+  potassium  Float
+  phosphorus Float
+  hemoglobin Float
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  patient patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@index([patientId, date(sort: Desc)])
+  @@map("lab_results")
+}
+
+model appointment {
+  id        String   @id @default(uuid())
+  patientId String   @map("patient_id")
+  date      DateTime
+  time      String
+  type      String
+  doctor    String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  patient patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@index([patientId, date(sort: Asc)])
+  @@map("appointments")
+}
+
+model hemodialysis_treatment {
+  id                     String   @id @default(uuid())
+  patientId              String   @unique @map("patient_id")
+  sessionDuration        String   @map("session_duration")
+  vascularAccessType     String   @map("vascular_access_type")
+  vascularAccessLocation String   @map("vascular_access_location")
+  vascularAccessDate     DateTime @map("vascular_access_date")
+  dryWeight              String   @map("dry_weight")
+  createdAt              DateTime @default(now()) @map("created_at")
+
+  patient  patient                   @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  schedule hemodialysis_schedule[]
+
+  @@map("hemodialysis_treatments")
+}
+
+model hemodialysis_schedule {
+  id                       String @id @default(uuid())
+  hemodialysisTreatmentId  String @map("hemodialysis_treatment_id")
+  day                      String
+  time                     String
+
+  treatment hemodialysis_treatment @relation(fields: [hemodialysisTreatmentId], references: [id], onDelete: Cascade)
+
+  @@map("hemodialysis_schedules")
+}
+
+model peritoneal_treatment {
+  id            String   @id @default(uuid())
+  patientId     String   @unique @map("patient_id")
+  dialysisType  String   @map("dialysis_type")
+  solutions     String[]
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  patient   patient               @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  exchanges peritoneal_exchange[]
+
+  @@map("peritoneal_treatments")
+}
+
+model peritoneal_exchange {
+  id                       String @id @default(uuid())
+  peritonealTreatmentId    String @map("peritoneal_treatment_id")
+  time                     String
+  volume                   String
+  dwellTime                String @map("dwell_time")
+
+  treatment peritoneal_treatment @relation(fields: [peritonealTreatmentId], references: [id], onDelete: Cascade)
+
+  @@map("peritoneal_exchanges")
+}
+
+model transplant_treatment {
+  id             String   @id @default(uuid())
+  patientId      String   @unique @map("patient_id")
+  transplantDate DateTime @map("transplant_date")
+  donorType      String   @map("donor_type")
+  nextReview     DateTime @map("next_review")
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  patient     patient                  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  medications transplant_medication[]
+
+  @@map("transplant_treatments")
+}
+
+model transplant_medication {
+  id                    String @id @default(uuid())
+  transplantTreatmentId String @map("transplant_treatment_id")
+  name                  String
+  dose                  String
+  frequency             String
+
+  treatment transplant_treatment @relation(fields: [transplantTreatmentId], references: [id], onDelete: Cascade)
+
+  @@map("transplant_medications")
+}
+
+model diet_recommendation {
+  id                    String   @id @default(uuid())
+  modality              String   @unique
+  headline              String
+  fluidDailyLimit       String   @map("fluid_daily_limit")
+  fluidTips             String[] @map("fluid_tips")
+  recommendedFoods      String[] @map("recommended_foods")
+  foodsToAvoid          String[] @map("foods_to_avoid")
+  potassiumLimit        String   @map("potassium_limit")
+  potassiumTips         String[] @map("potassium_tips")
+  potassiumFoodExamples String[] @map("potassium_food_examples")
+  phosphorusLimit       String   @map("phosphorus_limit")
+  phosphorusTips        String[] @map("phosphorus_tips")
+  phosphorusFoodExamples String[] @map("phosphorus_food_examples")
+  sodiumLimit           String   @map("sodium_limit")
+  sodiumTips            String[] @map("sodium_tips")
+  sodiumFoodExamples    String[] @map("sodium_food_examples")
+  practicalTips         String[] @map("practical_tips")
+  createdAt             DateTime @default(now()) @map("created_at")
+
+  @@map("diet_recommendations")
+}
+
+model contact_message {
+  id        String   @id @default(uuid())
+  patientId String   @map("patient_id")
+  subject   String
+  message   String
+  status    String   @default("enviado")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  patient patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@index([patientId, createdAt(sort: Desc)])
+  @@map("contact_messages")
+}
