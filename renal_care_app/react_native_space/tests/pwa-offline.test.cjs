@@ -14,6 +14,8 @@ async function serve(req, res) {
   try {
     let path = resolve(root, '.' + decodeURIComponent(new URL(req.url, 'http://localhost').pathname));
     if (path !== root && !path.startsWith(root + sep)) { res.writeHead(403).end(); return; }
+    // Simular un despliegue manual que excluye carpetas node_modules.
+    if (path.split(sep).includes('node_modules')) path = resolve(root, 'index.html');
     if (path === root) path = resolve(root, 'index.html');
     try { if (!(await stat(path)).isFile()) throw new Error('directory'); }
     catch { if (extname(path)) { res.writeHead(404).end(); return; } path = resolve(root, 'index.html'); }
@@ -40,6 +42,9 @@ test('PWA precarga, abre en frío sin red y permite tres perfiles y consultas lo
     await page.goto(base);
     await page.getByText('Disponible sin conexión', {exact:false}).waitFor();
     await page.waitForFunction(() => !!navigator.serviceWorker.controller);
+    await page.waitForFunction(() => Array.from(document.fonts).some(
+      font => font.family.replace(/["']/g, '') === 'material-community' && font.status === 'loaded'
+    ), null, {timeout:10000});
     assert.equal(await page.locator('link[rel="manifest"]').getAttribute('href'), '/manifest.webmanifest');
     const manifest = await page.evaluate(async () => (await fetch('/manifest.webmanifest')).json());
     assert.equal(manifest.display, 'standalone');
@@ -50,6 +55,9 @@ test('PWA precarga, abre en frío sin red y permite tres perfiles y consultas lo
     page.on('pageerror', e => errors.push(e.message));
     const response = await page.goto(base);
     assert.equal(response.fromServiceWorker(), true);
+    await page.waitForFunction(() => Array.from(document.fonts).some(
+      font => font.family.replace(/["']/g, '') === 'material-community' && font.status === 'loaded'
+    ));
     await page.getByText('Entrar', {exact:true}).click();
     const names = ['Herman (Hemodiálisis)', 'María (Diálisis Peritoneal)', 'Carlos (Trasplante Renal)'];
     const greetings = ['Herman', 'María', 'Carlos'];

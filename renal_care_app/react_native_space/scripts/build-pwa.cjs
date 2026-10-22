@@ -1,13 +1,42 @@
 const { spawnSync } = require('node:child_process');
-const { readFileSync, writeFileSync, readdirSync, statSync } = require('node:fs');
-const { join, resolve } = require('node:path');
+const { readFileSync, writeFileSync, readdirSync, statSync, existsSync, renameSync, rmSync } = require('node:fs');
+const { join, resolve, dirname } = require('node:path');
 const { createHash } = require('node:crypto');
 const root = resolve(__dirname, '..');
+const output = join(root, 'dist-pwa');
+// Solo borrar la salida generada, nunca archivos del proyecto.
+rmSync(output, { recursive: true, force: true });
 const result = spawnSync(process.execPath, [require.resolve('expo/bin/cli'), 'export', '--platform', 'web', '--output-dir', 'dist-pwa'], {
   cwd: root, stdio: 'inherit', env: { ...process.env, EXPO_PUBLIC_DEMO_MODE: 'true', CI: '1' },
 });
 if (result.status !== 0) process.exit(result.status ?? 1);
-const output = join(root, 'dist-pwa');
+// Los uploads manuales de algunos alojamientos excluyen carpetas node_modules.
+// Reubicar estos recursos y corregir sus URLs antes de calcular las cachés.
+const exportedModules = join(output, 'assets', 'node_modules');
+if (existsSync(exportedModules)) renameSync(exportedModules, join(output, 'assets', 'vendor'));
+const textFile = file => /\.(?:js|html|json|css|webmanifest)$/.test(file);
+for (const file of walk(output).filter(textFile)) {
+  const target = join(output, file);
+  const original = readFileSync(target, 'utf8');
+  const updated = original.replaceAll('assets/node_modules/', 'assets/vendor/');
+  if (updated !== original) writeFileSync(target, updated);
+}
+// Una URL nueva evita reutilizar bundles anteriores en el navegador o el CDN.
+for (const file of walk(output).filter(file => /\/entry-[^/]+\.js$/.test(file))) {
+  const content = readFileSync(join(output, file));
+  const digest = createHash('sha256').update(content).digest('hex').slice(0, 32);
+  const next = join(dirname(file), `entry-pwa-${digest}.js`).split('\\').join('/');
+  renameSync(join(output, file), join(output, next));
+  for (const reference of walk(output).filter(textFile)) {
+    const target = join(output, reference);
+    const original = readFileSync(target, 'utf8');
+    const updated = original.replaceAll(file, next);
+    if (updated !== original) writeFileSync(target, updated);
+  }
+}
+if (walk(output).some(file => file.split('/').includes('node_modules'))) {
+  throw new Error('La exportación contiene recursos que el alojamiento podría excluir');
+}
 // Expo output=single no utiliza +html.tsx: preparar el HTML exportado aquí.
 const indexPath = join(output, 'index.html');
 let html = readFileSync(indexPath, 'utf8')
@@ -45,7 +74,13 @@ const ASSETS = ${JSON.stringify(urls)};
 self.addEventListener('install', event => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE);
-    await cache.addAll(ASSETS.map(url => new Request(url, {cache: 'reload'})));
+    await Promise.all(ASSETS.map(async asset => {
+      const request = new Request(asset, {cache: 'reload'});
+      const response = await fetch(request);
+      const htmlFallback = (response.headers.get('content-type') || '').includes('text/html') && !asset.endsWith('.html');
+      if (!response.ok || htmlFallback) throw new Error('No se pudo descargar un recurso de la demo: ' + asset);
+      await cache.put(request, response);
+    }));
     await self.skipWaiting();
   })());
 });
@@ -62,7 +97,9 @@ self.addEventListener('fetch', event => {
     return;
   }
   event.respondWith((async () => {
-    const cached = await caches.match(event.request, {ignoreSearch: true});
+    const current = await caches.open(CACHE);
+    const cached = await current.match(event.request, {ignoreSearch: true})
+      || await caches.match(event.request, {ignoreSearch: true});
     return cached || fetch(event.request);
   })());
 });
