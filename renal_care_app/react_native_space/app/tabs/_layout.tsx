@@ -1,6 +1,6 @@
 import React from 'react';
 import { Tabs, Redirect } from 'expo-router';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { AppIcon as MaterialCommunityIcons } from '@/src/components/AppIcon';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { LoadingScreen } from '@/src/components/LoadingScreen';
 import { COLORS } from '@/src/constants/theme';

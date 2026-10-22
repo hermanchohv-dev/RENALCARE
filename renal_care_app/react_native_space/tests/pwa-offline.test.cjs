@@ -15,7 +15,7 @@ async function serve(req, res) {
     let path = resolve(root, '.' + decodeURIComponent(new URL(req.url, 'http://localhost').pathname));
     if (path !== root && !path.startsWith(root + sep)) { res.writeHead(403).end(); return; }
     // Simular un despliegue manual que excluye carpetas node_modules.
-    if (path.split(sep).includes('node_modules')) path = resolve(root, 'index.html');
+    if (path.split(sep).includes('node_modules') || /\.(ttf|woff2?)$/.test(path)) path = resolve(root, 'index.html');
     if (path === root) path = resolve(root, 'index.html');
     try { if (!(await stat(path)).isFile()) throw new Error('directory'); }
     catch { if (extname(path)) { res.writeHead(404).end(); return; } path = resolve(root, 'index.html'); }
@@ -35,16 +35,18 @@ test('PWA precarga, abre en frío sin red y permite tres perfiles y consultas lo
       args: ['--no-sandbox', '--disable-dev-shm-usage'],
     });
     const context = await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
-    const apiRequests = [], errors = [];
-    context.on('request', r => { if (new URL(r.url()).pathname.startsWith('/api/')) apiRequests.push(r.url()); });
+    const apiRequests = [], fontRequests = [], errors = [];
+    context.on('request', r => {
+      const path = new URL(r.url()).pathname;
+      if (path.startsWith('/api/')) apiRequests.push(r.url());
+      if (/\.(ttf|woff2?)$/.test(path)) fontRequests.push(r.url());
+    });
     let page = await context.newPage();
     page.on('pageerror', e => errors.push(e.message));
     await page.goto(base);
     await page.getByText('Disponible sin conexión', {exact:false}).waitFor();
     await page.waitForFunction(() => !!navigator.serviceWorker.controller);
-    await page.waitForFunction(() => Array.from(document.fonts).some(
-      font => font.family.replace(/["']/g, '') === 'material-community' && font.status === 'loaded'
-    ), null, {timeout:10000});
+    await page.getByTestId('app-icon-chevron-up').waitFor();
     assert.equal(await page.locator('link[rel="manifest"]').getAttribute('href'), '/manifest.webmanifest');
     const manifest = await page.evaluate(async () => (await fetch('/manifest.webmanifest')).json());
     assert.equal(manifest.display, 'standalone');
@@ -55,15 +57,19 @@ test('PWA precarga, abre en frío sin red y permite tres perfiles y consultas lo
     page.on('pageerror', e => errors.push(e.message));
     const response = await page.goto(base);
     assert.equal(response.fromServiceWorker(), true);
-    await page.waitForFunction(() => Array.from(document.fonts).some(
-      font => font.family.replace(/["']/g, '') === 'material-community' && font.status === 'loaded'
-    ));
+    await page.getByTestId('app-icon-chevron-up').waitFor();
     await page.getByText('Entrar', {exact:true}).click();
     const names = ['Herman (Hemodiálisis)', 'María (Diálisis Peritoneal)', 'Carlos (Trasplante Renal)'];
     const greetings = ['Herman', 'María', 'Carlos'];
     for (let i=0; i<names.length; i++) {
       await page.getByText(`Acceder como ${names[i]}`, {exact:true}).click();
       await page.getByText(`¡Hola, ${greetings[i]}!`, {exact:true}).waitFor();
+      for (const name of ['medical-bag','file-document-outline','food-apple-outline','phone-message','home','account-cog']) {
+        const icon = page.getByTestId(`app-icon-${name}`).first();
+        await icon.waitFor();
+        assert.equal(await icon.evaluate(node => node.tagName.toLowerCase()), 'svg');
+        assert.ok((await icon.locator('path').getAttribute('d')).length > 10);
+      }
       if (i > 0) assert.ok(!(await page.locator('body').innerText()).includes(`¡Hola, ${greetings[i-1]}!`));
       await page.goto(base + '/historia');
       await page.getByText('Última Analítica', {exact:true}).waitFor();
@@ -114,6 +120,7 @@ test('PWA precarga, abre en frío sin red y permite tres perfiles y consultas lo
       await page.getByText('Seleccionar perfil ficticio', {exact:true}).first().waitFor();
     }
     assert.deepEqual(apiRequests, [], 'La demo no debe consultar ninguna API');
+    assert.deepEqual(fontRequests, [], 'Los iconos deben funcionar sin descargar fuentes');
     assert.deepEqual(errors, [], 'Sin errores de ejecución en las pantallas');
     await mkdir(resolve(__dirname, '../test-results'), {recursive:true});
     await page.screenshot({path:resolve(__dirname, '../test-results/pwa-offline.png')});

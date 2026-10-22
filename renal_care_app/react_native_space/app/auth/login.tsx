@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Pressable, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { AppIcon as MaterialCommunityIcons } from '@/src/components/AppIcon';
 import { IS_DEMO } from '@/src/api/customFetch';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { COLORS, SPACING, RADIUS, GRADIENT_PRIMARY } from '@/src/constants/theme';

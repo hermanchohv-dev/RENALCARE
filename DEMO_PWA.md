@@ -57,3 +57,15 @@ YARN_NODE_LINKER=node-modules corepack yarn test:pwa
 La prueba crea su servidor local temporal, descarga los recursos, desactiva la red, cierra la pestaña y abre otra desde cero. Recorre todos los perfiles, las pantallas clínicas, la simulación de ambulancia, guardado y recuperación de consultas ficticias y cierre de sesión. Comprueba que no hay peticiones a /api/ ni errores de ejecución. Puede usarse PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH si Chromium está instalado por el sistema.
 
 Validación de esta entrega: TypeScript sin errores; 4 pruebas de API local aprobadas; prueba de navegador Chromium sin red aprobada. No se ha probado todavía la instalación en un iPhone físico ni se ha publicado el sitio.
+
+## Edición 2: iconos incluidos como SVG
+
+Los 34 iconos de la aplicación se dibujan directamente con react-native-svg;
+no dependen de fuentes .ttf/.woff ni de una CDN. La franja superior indica
+«Edición 2» para distinguir esta entrega de instalaciones anteriores.
+La prueba de navegador bloquea las fuentes y comprueba que los iconos SVG
+siguen visibles tras cerrar y reabrir sin red.
+
+Para actualizar una copia existente: git pull --ff-only y después build:pwa.
+Subir de nuevo dist-pwa al mismo sitio de Netlify. Confirmar «Edición 2»
+abriendo la URL con internet antes de probar desde el icono instalado.

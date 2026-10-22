@@ -21,7 +21,7 @@ export function DemoStatus() {
   if (!IS_DEMO) return null;
   return <View style={styles.banner}>
     <Pressable onPress={() => setHelp(v => !v)} accessibilityRole="button" accessibilityLabel="Instrucciones de instalación de la demo">
-      <Text style={styles.title}>DEMO · Datos ficticios · Sin atención médica</Text>
+      <Text style={styles.title}>DEMO · Edición 2 · Datos ficticios · Sin atención médica</Text>
       <Text style={styles.subtitle}>{Platform.OS === 'web' ? status + ' · Cómo instalar' : 'Datos locales de demostración'}</Text>
     </Pressable>
     {help && <Text style={styles.help}>
