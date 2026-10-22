@@ -1,0 +1,10 @@
+[out:json][timeout:90];
+(
+  way["highway"](42.440,-2.455,42.470,-2.408);
+  way["leisure"="park"](42.440,-2.455,42.470,-2.408);
+  nwr["name"~"Espol[oó]n",i](42.440,-2.455,42.470,-2.408);
+  nwr["amenity"="hospital"](42.440,-2.455,42.470,-2.408);
+);
+out body;
+>;
+out skel qt;

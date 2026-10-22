@@ -1,5 +1,6 @@
 /** Datos ficticios de presentación. No se exportan bases de datos de pacientes. */
 import diets from './diet.json';
+import { transportMap } from '../transport/mapData';
 import type {
   PatientProfileDto, ClinicalHistoryDto, TreatmentInfoDto,
   DietRecommendationsDto, AmbulanceStatusDto,
@@ -99,6 +100,28 @@ export function diet(index: number): DietRecommendationsDto {
 }
 
 export function ambulance(index: number): AmbulanceStatusDto {
+  if (transportMap.ready && transportMap.route.length > 1) {
+    const route = transportMap.route.map(([lng, lat]) => ({ lat, lng }));
+    const hospital =
+      transportMap.end?.point ??
+      transportMap.route[transportMap.route.length - 1];
+    const hospitalLocation = { lat: hospital[1], lng: hospital[0] };
+    return {
+      available: index === 0,
+      status: index === 0 ? "en_camino" : "no_disponible",
+      estimatedMinutes:
+        index === 0
+          ? Math.max(
+              5,
+              Math.round((transportMap.distanceMeters / 1000 / 25) * 60),
+            )
+          : 0,
+      distanceKm: index === 0 ? transportMap.distanceMeters / 1000 : 0,
+      hospitalLocation,
+      ambulanceLocation: index === 0 ? route[0] : hospitalLocation,
+      waypoints: index === 0 ? route : [],
+    };
+  }
   const hospital = { lat: 42.4627, lng: -2.4445 };
   const waypoints = index === 0 ? [
     { lat: 42.452, lng: -2.46 }, { lat: 42.4545, lng: -2.457 },

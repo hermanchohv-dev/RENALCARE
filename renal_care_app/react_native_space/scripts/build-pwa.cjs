@@ -4,6 +4,11 @@ const { join, resolve, dirname } = require('node:path');
 const { createHash } = require('node:crypto');
 const root = resolve(__dirname, '..');
 const output = join(root, 'dist-pwa');
+const transportMap = JSON.parse(readFileSync(join(root, 'src/transport/logrono-map.json'), 'utf8'));
+if (!transportMap.ready || transportMap.route.length < 3 || (transportMap.testing && process.env.RENALCARE_ALLOW_TEST_MAP !== '1')) {
+  console.error('Antes de publicar el mapa real, ejecuta: yarn prepare:map. Necesita internet una sola vez para descargar OpenStreetMap.');
+  process.exit(1);
+}
 // Solo borrar la salida generada, nunca archivos del proyecto.
 rmSync(output, { recursive: true, force: true });
 const result = spawnSync(process.execPath, [require.resolve('expo/bin/cli'), 'export', '--platform', 'web', '--output-dir', 'dist-pwa'], {

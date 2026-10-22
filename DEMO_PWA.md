@@ -9,6 +9,7 @@ Desde la raíz del repositorio actualizado:
 ```bash
 cd renal_care_app/react_native_space
 YARN_NODE_LINKER=node-modules corepack yarn install --immutable
+YARN_NODE_LINKER=node-modules corepack yarn prepare:map
 YARN_NODE_LINKER=node-modules corepack yarn tsc --noEmit
 YARN_NODE_LINKER=node-modules corepack yarn test:demo
 YARN_NODE_LINKER=node-modules corepack yarn build:pwa
@@ -69,3 +70,44 @@ siguen visibles tras cerrar y reabrir sin red.
 Para actualizar una copia existente: git pull --ff-only y después build:pwa.
 Subir de nuevo dist-pwa al mismo sitio de Netlify. Confirmar «Edición 2»
 abriendo la URL con internet antes de probar desde el icono instalado.
+
+
+## Transporte: mapa real y simulación de 45 segundos
+
+El marcador es una ambulancia SVG vista desde arriba, con carrocería blanca,
+ventanas, ruedas, luces azules/rojas y cruz sanitaria. El panel muestra salida,
+destino, distancia y tiempo ilustrativo. Permite iniciar, pausar, continuar,
+volver al inicio y repetir. No solicita transportes ni utiliza GPS.
+
+Antes de generar esta versión hay que ejecutar `yarn prepare:map` desde
+`renal_care_app/react_native_space`. Requiere internet durante la preparación;
+no necesita cuenta ni clave. Descarga una pequeña zona de Logroño de Overpass,
+identifica El Espolón y el Hospital San Pedro por sus etiquetas OSM y calcula
+un recorrido por vías accesibles a vehículos respetando sus sentidos registrados.
+No tiene información de tráfico, restricciones de giro ni accesos operativos:
+es un recorrido ilustrativo, no un navegador para conductores.
+
+El resultado se guarda en `src/transport/logrono-map.json`, incluyendo fecha,
+procedencia, identificadores OSM, licencia, calles y coordenadas. Después de
+incorporarlo con `build:pwa`, no necesita servidor de mapas ni conexión durante
+la demostración. La cartografía es © OpenStreetMap contributors, distribuida
+bajo ODbL 1.0: https://www.openstreetmap.org/copyright . Mantener la atribución
+visible al compartir la demo y el archivo de datos.
+
+Si Overpass no responde, no se altera un mapa anterior. Puede reintentarse más
+tarde o proporcionar un JSON Overpass ya descargado con
+`node scripts/prepare-map.cjs /ruta/al/archivo.json`. El comando no inventa
+ubicaciones si no encuentra los lugares o un recorrido conectado. `build:pwa`
+rechaza datos pendientes y mapas marcados como pruebas; no publicar una
+geometría de prueba como si fuera Logroño.
+
+La red del entorno de desarrollo en la nube no permite todavía descargar
+OpenStreetMap. El código y las pruebas están preparados; la cartografía real
+queda pendiente de descargar desde el Mac o de habilitar los dominios del
+entorno. La prueba de importación y del simulador utiliza una red ficticia,
+marcada como tal, sin presentarla como cartografía real.
+
+Pruebas específicas: `yarn test:transport` verifica identificación de lugares,
+sentidos únicos, exclusión de vías privadas, errores de descarga y avance por
+distancia. La prueba PWA comprueba pausa, continuación, llegada y repetición
+sin red. Las ubicaciones y el trazado reales se deben revisar tras la descarga.
