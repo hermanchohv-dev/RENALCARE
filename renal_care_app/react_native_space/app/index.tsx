@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { View, Text, Pressable, StyleSheet, Animated, Image } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { AppIcon as MaterialCommunityIcons } from '@/src/components/AppIcon';
-import Svg, { Path } from 'react-native-svg';
+import { KidneyMark } from '@/src/components/KidneyMark';
 import { useRouter } from 'expo-router';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { GRADIENT_SPLASH, SPACING } from '@/src/constants/theme';
@@ -43,11 +43,7 @@ export default function SplashScreen() {
     <LinearGradient colors={GRADIENT_SPLASH} style={styles.container} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}>
       <Animated.View style={[styles.logoContainer, { opacity: fadeAnim, transform: [{ scale: scaleAnim }] }]}>
         <View style={styles.kidneyIconWrapper}>
-          <Svg width={84} height={84} viewBox="0 0 64 64" fill="none">
-            <Path d="M25.5 10C18.1 10 12 16.5 12 24.4v8.9C12 43.5 18.7 52 27 52c7.5 0 13-6.3 13-14.2V24.4C40 16.5 33.9 10 25.5 10Z" fill="#FFFFFF" />
-            <Path d="M38.5 12C45.9 12 52 18.3 52 26.1v7.8C52 44 45.7 52 37.8 52C30.5 52 25 45.7 25 37.8V26.1C25 18.3 31.1 12 38.5 12Z" fill="rgba(255,255,255,0.9)" />
-            <Path d="M30 22c3 2.5 4.4 5.8 4.4 10.7 0 5.7-2.4 8.9-6.4 11.3" stroke="#4A90E2" strokeWidth="2.8" strokeLinecap="round" />
-          </Svg>
+          <KidneyMark />
         </View>
         <Text style={styles.title}>RENAL-CARE</Text>
         <Text style={styles.subtitle}>Hospital Universitario{"\n"}San Pedro de Logroño</Text>
