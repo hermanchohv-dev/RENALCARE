@@ -179,7 +179,7 @@ export default function AmbulanciaScreen() {
                 <Text style={styles.metric}>
                   {phase === "arrived" ? "Llegada" : `${minutes} min`}
                 </Text>
-                <Text style={styles.caption}>Tiempo ilustrativo restante</Text>
+                <Text style={styles.caption}>Estimación simulada</Text>
               </View>
               <View style={styles.metricDivider} />
               <View>
@@ -215,6 +215,24 @@ export default function AmbulanciaScreen() {
                 ),
               )}
             </View>
+            <Pressable
+              accessibilityRole="button"
+              disabled={!ready}
+              onPress={start}
+              style={[styles.primary, !ready && { opacity: 0.45 }]}
+            >
+              <AppIcon
+                name={phase === "arrived" ? "check-circle" : "play-circle"}
+                size={20}
+                color="#FFFFFF"
+              />
+              <Text style={styles.primaryText}>{button}</Text>
+            </Pressable>
+            {phase !== "idle" && (
+              <Pressable accessibilityRole="button" onPress={reset}>
+                <Text style={styles.reset}>Volver al inicio del recorrido</Text>
+              </Pressable>
+            )}
             <View style={styles.unit}>
               <View style={styles.vehicleBadge}>
                 <AmbulanceVehicle size={22} />
@@ -245,24 +263,6 @@ export default function AmbulanciaScreen() {
                 </View>
               </View>
             </View>
-            <Pressable
-              accessibilityRole="button"
-              disabled={!ready}
-              onPress={start}
-              style={[styles.primary, !ready && { opacity: 0.45 }]}
-            >
-              <AppIcon
-                name={phase === "arrived" ? "check-circle" : "play-circle"}
-                size={20}
-                color="#FFFFFF"
-              />
-              <Text style={styles.primaryText}>{button}</Text>
-            </Pressable>
-            {phase !== "idle" && (
-              <Pressable accessibilityRole="button" onPress={reset}>
-                <Text style={styles.reset}>Volver al inicio del recorrido</Text>
-              </Pressable>
-            )}
             <Text style={styles.disclaimer}>
               {ready
                 ? "Demostración acelerada de 45 segundos. La ubicación y los tiempos son ficticios. No representa tráfico ni disponibilidad real."
@@ -337,6 +337,7 @@ const styles = StyleSheet.create({
   stageLine: { height: 4, borderRadius: 3, marginBottom: 7 },
   stageText: { fontSize: 10, fontWeight: "600" },
   unit: {
+    marginTop: 16,
     flexDirection: "row",
     alignItems: "center",
     gap: 11,

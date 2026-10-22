@@ -25,58 +25,133 @@ const streets = new Set([
 ]);
 const BaseMap = memo(function BaseMap({
   project,
+  width,
+  height,
 }: {
   project: (p: Point) => Point;
+  width: number;
+  height: number;
 }) {
+  const layers = useMemo(() => {
+    const visible = (points: Point[]) => {
+      const screen = points.map(project);
+      return (
+        screen.some(
+          (p) =>
+            p[0] >= -30 &&
+            p[0] <= width + 30 &&
+            p[1] >= -30 &&
+            p[1] <= height + 30,
+        ) ||
+        (Math.min(...screen.map((p) => p[0])) < width &&
+          Math.max(...screen.map((p) => p[0])) > 0 &&
+          Math.min(...screen.map((p) => p[1])) < height &&
+          Math.max(...screen.map((p) => p[1])) > 0)
+      );
+    };
+    const groups: Record<string, string[]> = {
+      major: [],
+      local: [],
+      minor: [],
+      park: [],
+      hospital: [],
+    };
+    for (const area of data.areas)
+      if (visible(area.points))
+        groups[area.kind === "park" ? "park" : "hospital"].push(
+          pathFor(area.points, project) + "Z",
+        );
+    for (const road of data.roads) {
+      if (!visible(road.points)) continue;
+      const kind = [
+        "motorway",
+        "trunk",
+        "primary",
+        "secondary",
+        "tertiary",
+      ].includes(road.kind)
+        ? "major"
+        : streets.has(road.kind)
+          ? "local"
+          : "minor";
+      groups[kind].push(pathFor(road.points, project));
+    }
+    const labels: { name: string; x: number; y: number }[] = [];
+    const endpoints = data.route.length
+      ? [project(data.route[0]), project(data.route[data.route.length - 1])]
+      : [];
+    const candidates = [...data.labels].sort(
+      (a, b) =>
+        Number(data.streetNames.includes(b.name)) -
+        Number(data.streetNames.includes(a.name)),
+    );
+    for (const label of candidates) {
+      const [x, y] = project(label.point),
+        half = label.name.length * 2.3;
+      if (x - half < 5 || x + half > width - 5 || y < 18 || y > height - 20)
+        continue;
+      if (endpoints.some((p) => Math.hypot(p[0] - x, p[1] - y) < 40)) continue;
+      if (
+        labels.some(
+          (other) =>
+            Math.abs(other.y - y) < 17 &&
+            Math.abs(other.x - x) <
+              (other.name.length + label.name.length) * 2.3 + 8,
+        )
+      )
+        continue;
+      labels.push({ name: label.name, x, y });
+      if (labels.length === 12) break;
+    }
+    return {
+      paths: Object.fromEntries(
+        Object.entries(groups).map(([key, paths]) => [key, paths.join(" ")]),
+      ),
+      labels,
+    };
+  }, [project, width, height]);
   return (
     <G>
-      {data.areas.map((area, i) => (
-        <Path
-          key={`a${i}`}
-          d={pathFor(area.points, project) + "Z"}
-          fill={area.kind === "park" ? "#CDE7D4" : "#E3DBF4"}
-          stroke="none"
-        />
-      ))}
-      {data.roads.map((road, i) => (
-        <Path
-          key={`o${i}`}
-          d={pathFor(road.points, project)}
-          stroke="#D4DDD9"
-          strokeWidth={streets.has(road.kind) ? 6 : 2}
-          fill="none"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      ))}
-      {data.roads
-        .filter((road) => streets.has(road.kind))
-        .map((road, i) => (
+      <Path d={layers.paths.park} fill="#CDE7D4" stroke="none" />
+      <Path d={layers.paths.hospital} fill="#E3DBF4" stroke="none" />
+      <Path
+        d={layers.paths.minor}
+        fill="none"
+        stroke="#D9E2DA"
+        strokeWidth={1.5}
+      />
+      {(["major", "local"] as const).map((kind) => (
+        <G key={kind}>
           <Path
-            key={`i${i}`}
-            d={pathFor(road.points, project)}
-            stroke="#FFFFFF"
-            strokeWidth={4}
+            d={layers.paths[kind]}
             fill="none"
+            stroke="#D1DBD7"
+            strokeWidth={kind === "major" ? 7 : 4.5}
             strokeLinecap="round"
             strokeLinejoin="round"
           />
-        ))}
-      {data.labels.map((label, i) => {
-        const [x, y] = project(label.point);
-        return (
-          <SvgText
-            key={`l${i}`}
-            x={x}
-            y={y}
-            fill="#82918B"
-            fontSize={8}
-            textAnchor="middle"
-          >
-            {label.name}
-          </SvgText>
-        );
-      })}
+          <Path
+            d={layers.paths[kind]}
+            fill="none"
+            stroke="#FFFFFF"
+            strokeWidth={kind === "major" ? 5 : 3}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </G>
+      ))}
+      {layers.labels.map((label) => (
+        <SvgText
+          key={label.name}
+          x={label.x}
+          y={label.y}
+          fill="#788C83"
+          fontSize={9}
+          textAnchor="middle"
+        >
+          {label.name}
+        </SvgText>
+      ))}
     </G>
   );
 });
@@ -132,7 +207,7 @@ export function TransportMap({
   return (
     <View style={[styles.map, { width, height }]} testID="transport-map">
       <Svg width={width} height={height} viewBox={`0 0 ${width} ${height}`}>
-        <BaseMap project={project} />
+        <BaseMap project={project} width={width} height={height} />
         <Path
           d={pathFor(data.route, project)}
           fill="none"

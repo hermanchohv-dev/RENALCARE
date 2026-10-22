@@ -9,7 +9,6 @@ Desde la raíz del repositorio actualizado:
 ```bash
 cd renal_care_app/react_native_space
 YARN_NODE_LINKER=node-modules corepack yarn install --immutable
-YARN_NODE_LINKER=node-modules corepack yarn prepare:map
 YARN_NODE_LINKER=node-modules corepack yarn tsc --noEmit
 YARN_NODE_LINKER=node-modules corepack yarn test:demo
 YARN_NODE_LINKER=node-modules corepack yarn build:pwa
@@ -79,8 +78,9 @@ ventanas, ruedas, luces azules/rojas y cruz sanitaria. El panel muestra salida,
 destino, distancia y tiempo ilustrativo. Permite iniciar, pausar, continuar,
 volver al inicio y repetir. No solicita transportes ni utiliza GPS.
 
-Antes de generar esta versión hay que ejecutar `yarn prepare:map` desde
-`renal_care_app/react_native_space`. Requiere internet durante la preparación;
+Esta versión ya incluye la cartografía real descargada el 22 de octubre de 2026.
+Para actualizarla puede ejecutarse `yarn prepare:map` desde
+`renal_care_app/react_native_space`. La actualización requiere internet;
 no necesita cuenta ni clave. Descarga una pequeña zona de Logroño de Overpass,
 identifica El Espolón y el Hospital San Pedro por sus etiquetas OSM y calcula
 un recorrido por vías accesibles a vehículos respetando sus sentidos registrados.
@@ -101,13 +101,18 @@ ubicaciones si no encuentra los lugares o un recorrido conectado. `build:pwa`
 rechaza datos pendientes y mapas marcados como pruebas; no publicar una
 geometría de prueba como si fuera Logroño.
 
-La red del entorno de desarrollo en la nube no permite todavía descargar
-OpenStreetMap. El código y las pruebas están preparados; la cartografía real
-queda pendiente de descargar desde el Mac o de habilitar los dominios del
-entorno. La prueba de importación y del simulador utiliza una red ficticia,
-marcada como tal, sin presentarla como cartografía real.
+La cartografía incorporada procede del archivo Overpass descargado desde el Mac:
+4.831 vías, 179 áreas, 177 puntos de trayecto y 2.585 metros de recorrido.
+El origen es el entorno del Espolón (elemento OSM way/545052317), ajustado a
+Calle Miguel Villanueva; el destino es una vía próxima al Hospital San Pedro
+(elemento OSM way/1172870559). Los accesos están aproximadamente a 91 y 112
+metros de los centros de los lugares identificados. El trazado no repite nodos.
+No se ha comprobado la situación actual del tráfico ni la operativa de accesos.
+La prueba del navegador se ha ejecutado con esta cartografía real, sin red,
+verificando pausa, continuación, llegada y repetición. Las pruebas unitarias
+del importador utilizan por separado una red ficticia marcada como tal.
 
 Pruebas específicas: `yarn test:transport` verifica identificación de lugares,
 sentidos únicos, exclusión de vías privadas, errores de descarga y avance por
 distancia. La prueba PWA comprueba pausa, continuación, llegada y repetición
-sin red. Las ubicaciones y el trazado reales se deben revisar tras la descarga.
+sin red. Revisar de nuevo las ubicaciones y el trazado si se actualizan los datos.
