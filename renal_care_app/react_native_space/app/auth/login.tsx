@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Pressable, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { AppIcon as MaterialCommunityIcons } from '@/src/components/AppIcon';
+import { KidneyMark } from '@/src/components/KidneyMark';
+import { ModalityIcon } from '@/src/components/ModalityIcon';
 import { IS_DEMO } from '@/src/api/customFetch';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { COLORS, SPACING, RADIUS, GRADIENT_PRIMARY } from '@/src/constants/theme';
@@ -9,9 +11,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 
 const DEMO_ACCOUNTS = [
-  { label: 'Herman (Hemodiálisis)', email: 'herman@demo.com', password: 'demo123', color: COLORS.modalityHD },
-  { label: 'María (Diálisis Peritoneal)', email: 'maria@demo.com', password: 'demo123', color: COLORS.modalityDP },
-  { label: 'Carlos (Trasplante Renal)', email: 'carlos@demo.com', password: 'demo123', color: COLORS.modalityTX },
+  { label: 'Herman (Hemodiálisis)', email: 'herman@demo.com', password: 'demo123', color: COLORS.modalityHD, modality: 'hemodialysis' as const },
+  { label: 'María (Diálisis Peritoneal)', email: 'maria@demo.com', password: 'demo123', color: COLORS.modalityDP, modality: 'peritoneal' as const },
+  { label: 'Carlos (Trasplante Renal)', email: 'carlos@demo.com', password: 'demo123', color: COLORS.modalityTX, modality: 'transplant' as const },
 ];
 
 export default function LoginScreen() {
@@ -50,7 +52,7 @@ export default function LoginScreen() {
         </Pressable>
 
         <View style={styles.logoSection}>
-          <MaterialCommunityIcons name="heart-pulse" size={48} color={COLORS.primary} />
+          <KidneyMark size={54} color={COLORS.primary} detailColor="#C7DFFB" vesselColor={COLORS.primaryLight} />
           <Text style={styles.logoText}>RENAL-CARE</Text>
         </View>
 
@@ -112,6 +114,7 @@ export default function LoginScreen() {
               onPress={() => handleLogin(acc.email, acc.password)}
               disabled={loading}
             >
+              <View style={[styles.modalityIcon, { backgroundColor: acc.color + '12' }]}><ModalityIcon modality={acc.modality} color={acc.color} /></View>
               <Text style={[styles.demoButtonText, { color: acc.color }]}>Acceder como {acc.label}</Text>
             </Pressable>
           ))}
@@ -145,7 +148,8 @@ const styles = StyleSheet.create({
   demoBadge: { backgroundColor: COLORS.accent, paddingHorizontal: SPACING.md, paddingVertical: SPACING.xs, borderRadius: RADIUS.full, marginBottom: SPACING.md },
   demoBadgeText: { color: '#FFF', fontSize: 12, fontWeight: '700' },
   demoLabel: { fontSize: 14, color: COLORS.textSecondary, marginBottom: SPACING.sm },
-  demoButton: { width: '100%', borderWidth: 1.5, borderRadius: RADIUS.md, paddingVertical: SPACING.sm + 4, paddingHorizontal: SPACING.md, marginBottom: SPACING.sm, alignItems: 'center', backgroundColor: COLORS.surface },
-  demoButtonText: { fontSize: 14, fontWeight: '600' },
+  modalityIcon: { width: 52, height: 52, borderRadius: 13, alignItems: 'center', justifyContent: 'center', marginRight: SPACING.sm },
+  demoButton: { flexDirection: 'row', width: '100%', borderWidth: 1.5, borderRadius: RADIUS.md, paddingVertical: SPACING.sm + 4, paddingHorizontal: SPACING.md, marginBottom: SPACING.sm, alignItems: 'center', backgroundColor: COLORS.surface },
+  demoButtonText: { flex: 1, flexShrink: 1, fontSize: 14, fontWeight: '600', lineHeight: 20 },
   footer: { marginTop: SPACING.xl, fontSize: 13, color: COLORS.textMuted, textAlign: 'center' },
 });
