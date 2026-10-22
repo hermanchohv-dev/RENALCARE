@@ -75,9 +75,31 @@ test('PWA precarga, abre en frío sin red y permite tres perfiles y consultas lo
         await page.getByText('Aceptar', {exact:true}).click();
         await page.reload();
         await page.getByText('Consulta ficticia de Herman', {exact:true}).waitFor();
-        await page.goto(base + '/ambulancia');
+        await page.goto(base + '/tabs');
+        await page.getByText('Mi Ambulancia', {exact:true}).click();
         await page.getByText('Simular recorrido', {exact:true}).click();
+        await page.getByText('12 min', {exact:true}).waitFor();
+        await page.getByText('Reiniciar recorrido', {exact:true}).click();
+        await page.getByText('15 min', {exact:true}).waitFor();
+        await page.getByText('¡La ambulancia ha llegado!', {exact:true}).waitFor({timeout:15000});
+        await page.getByText('0 min', {exact:true}).waitFor();
+        await page.getByText('Repetir simulación', {exact:true}).click();
+        await page.getByText('Reiniciar recorrido', {exact:true}).waitFor();
+        await page.setViewportSize({width:430,height:844});
         assert.equal(await page.getByText('Abrir en Google Maps', {exact:true}).count(), 0);
+        // Salir durante la animación debe cancelar sus callbacks.
+        await page.getByRole('button', {name:'Volver',exact:true}).click();
+        await page.waitForFunction(() => location.pathname !== '/ambulancia');
+        await page.getByTestId('ambulance-marker').waitFor({state:'detached'});
+        await page.getByText('Mi Ambulancia', {exact:true}).click();
+        await page.getByText('Simular recorrido', {exact:true}).waitFor();
+        await page.getByText('Simular recorrido', {exact:true}).click();
+        await page.getByText('12 min', {exact:true}).waitFor();
+      }
+      if (i > 0) {
+        await page.goto(base + '/ambulancia');
+        await page.getByText('Este servicio solo está disponible para pacientes en Hemodiálisis', {exact:true}).waitFor();
+        assert.equal(await page.getByText('Simular recorrido', {exact:true}).count(), 0);
       }
       await page.goto(base + '/tabs/profile');
       await page.getByText('Cerrar Sesión', {exact:true}).click();

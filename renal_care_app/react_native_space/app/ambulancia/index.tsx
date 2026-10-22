@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, ScrollView, Pressable, Animated, Platform, Linking, Dimensions, Easing } from 'react-native';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { View, Text, StyleSheet, ScrollView, Pressable, Animated, Platform, Linking, useWindowDimensions, Easing } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -8,7 +8,8 @@ import { COLORS, SPACING, RADIUS } from '@/src/constants/theme';
 import { IS_DEMO } from '@/src/api/customFetch';
 import { LoadingScreen } from '@/src/components/LoadingScreen';
 
-const { width: screenWidth } = Dimensions.get('window');
+// Todas las transformaciones del marcador deben compartir el mismo motor.
+const USE_NATIVE_DRIVER = Platform.OS !== 'web';
 const CENTRO_LOGRONO = { lat: 42.4627, lng: -2.4450 };
 const RANGO_MAPA = { lat: 0.015, lng: 0.025 };
 
@@ -28,23 +29,30 @@ function getStatusColor(status?: string): string {
 
 export default function AmbulanciaScreen() {
   const router = useRouter();
+  const { width: screenWidth } = useWindowDimensions();
+  const goBack = () => {
+    if (router.canGoBack()) router.back();
+    else router.replace('/tabs');
+  };
   const insets = useSafeAreaInsets();
   const { data, isLoading } = usePatientsControllerGetAmbulance();
   const [simulating, setSimulating] = useState(false);
+  const [simulationRun, setSimulationRun] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
   const [eta, setEta] = useState(15);
   const [currentStatus, setCurrentStatus] = useState('en_camino');
   const pulseAnim = useRef(new Animated.Value(1)).current;
   const ambulanceAnim = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current;
 
-  const waypoints = data?.waypoints ?? [];
+  const waypoints = useMemo(() => (data?.waypoints ?? []).filter(
+    point => Number.isFinite(point.lat) && Number.isFinite(point.lng)
+  ), [data?.waypoints]);
   const hospitalLoc = data?.hospitalLocation;
-  const currentPos = waypoints[currentStep] ?? data?.ambulanceLocation;
 
   const mapWidth = screenWidth - SPACING.md * 2;
   const mapHeight = 280;
 
-  const normalizeCoord = (lat: number, lng: number) => {
+  const normalizeCoord = useCallback((lat: number, lng: number) => {
     const minLat = CENTRO_LOGRONO.lat - RANGO_MAPA.lat / 2;
     const maxLat = CENTRO_LOGRONO.lat + RANGO_MAPA.lat / 2;
     const minLng = CENTRO_LOGRONO.lng - RANGO_MAPA.lng / 2;
@@ -57,31 +65,33 @@ export default function AmbulanciaScreen() {
       x: ((safeLng - minLng) / (maxLng - minLng)) * (mapWidth - 40) + 20,
       y: ((maxLat - safeLat) / (maxLat - minLat)) * (mapHeight - 40) + 20,
     };
-  };
+  }, [mapWidth]);
 
   useEffect(() => {
-    Animated.loop(
+    if (!data?.available) return;
+    const pulse = Animated.loop(
       Animated.sequence([
-        Animated.timing(pulseAnim, { toValue: 1.12, duration: 800, useNativeDriver: true }),
-        Animated.timing(pulseAnim, { toValue: 1, duration: 800, useNativeDriver: true }),
+        Animated.timing(pulseAnim, { toValue: 1.12, duration: 800, useNativeDriver: USE_NATIVE_DRIVER }),
+        Animated.timing(pulseAnim, { toValue: 1, duration: 800, useNativeDriver: USE_NATIVE_DRIVER }),
       ])
-    ).start();
-  }, [pulseAnim]);
+    );
+    pulse.start();
+    return () => pulse.stop();
+  }, [pulseAnim, data?.available]);
 
   useEffect(() => {
     const startCoord = waypoints[0] ?? data?.ambulanceLocation ?? CENTRO_LOGRONO;
     const startPos = normalizeCoord(startCoord?.lat ?? CENTRO_LOGRONO.lat, startCoord?.lng ?? CENTRO_LOGRONO.lng);
     ambulanceAnim.setValue({ x: startPos.x - 16, y: startPos.y - 16 });
-  }, [data?.ambulanceLocation, waypoints.length]);
+  }, [data?.ambulanceLocation, waypoints, normalizeCoord, ambulanceAnim]);
 
   useEffect(() => {
-    if (!simulating) return;
-    if (!waypoints.length || waypoints.length < 2) {
-      setCurrentStatus('en_hospital');
-      setEta(0);
-      setSimulating(false);
-      return;
-    }
+    if (simulationRun === 0 || !data?.available || waypoints.length < 2) return;
+    const startPos = normalizeCoord(waypoints[0].lat, waypoints[0].lng);
+    ambulanceAnim.setValue({ x: startPos.x - 16, y: startPos.y - 16 });
+    setCurrentStep(0);
+    setEta((waypoints.length - 1) * 3);
+    setSimulating(true);
 
     let isCancelled = false;
 
@@ -103,13 +113,13 @@ export default function AmbulanciaScreen() {
           toValue: nextPos.x - 16,
           duration: 1800,
           easing: Easing.inOut(Easing.cubic),
-          useNativeDriver: false,
+          useNativeDriver: USE_NATIVE_DRIVER,
         }),
         Animated.timing(ambulanceAnim.y, {
           toValue: nextPos.y - 16,
           duration: 1800,
           easing: Easing.inOut(Easing.cubic),
-          useNativeDriver: false,
+          useNativeDriver: USE_NATIVE_DRIVER,
         }),
       ]).start(({ finished }) => {
         if (!finished || isCancelled) return;
@@ -142,7 +152,7 @@ export default function AmbulanciaScreen() {
       isCancelled = true;
       ambulanceAnim.stopAnimation();
     };
-  }, [simulating, waypoints]);
+  }, [simulationRun, data?.available, waypoints, normalizeCoord, ambulanceAnim]);
 
   if (isLoading) return <LoadingScreen />;
 
@@ -150,7 +160,7 @@ export default function AmbulanciaScreen() {
     return (
       <View style={[styles.container, { paddingTop: insets.top }]}> 
         <View style={styles.headerRow}>
-          <Pressable onPress={() => router.back()} style={styles.backButton}>
+          <Pressable accessibilityRole="button" accessibilityLabel="Volver" onPress={goBack} style={styles.backButton}>
             <MaterialCommunityIcons name="arrow-left" size={24} color={COLORS.textPrimary} />
           </Pressable>
           <Text style={styles.headerTitle}>{IS_DEMO ? 'Ambulancia · Simulación' : 'Mi Ambulancia'}</Text>
@@ -158,7 +168,7 @@ export default function AmbulanciaScreen() {
         <View style={styles.unavailableContainer}>
           <MaterialCommunityIcons name="ambulance" size={64} color={COLORS.textMuted} />
           <Text style={styles.unavailableText}>Este servicio solo está disponible para pacientes en Hemodiálisis</Text>
-          <Pressable style={styles.backBtn} onPress={() => router.back()}>
+          <Pressable style={styles.backBtn} onPress={goBack}>
             <Text style={styles.backBtnText}>Volver</Text>
           </Pressable>
         </View>
@@ -167,16 +177,9 @@ export default function AmbulanciaScreen() {
   }
 
   const startSimulation = () => {
-    const startCoord = waypoints[0] ?? currentPos ?? CENTRO_LOGRONO;
-    const startPos = normalizeCoord(startCoord?.lat ?? CENTRO_LOGRONO.lat, startCoord?.lng ?? CENTRO_LOGRONO.lng);
-    ambulanceAnim.setValue({ x: startPos.x - 16, y: startPos.y - 16 });
-
-    setSimulating(false);
-    setCurrentStep(0);
-    setEta(Math.max(0, (waypoints.length - 1) * 3));
-    setCurrentStatus('en_camino');
-
-    requestAnimationFrame(() => setSimulating(true));
+    // Un identificador nuevo cancela el recorrido anterior antes de reiniciarlo.
+    // No dejar callbacks requestAnimationFrame pendientes al salir de la pantalla.
+    setSimulationRun(run => run + 1);
   };
 
   const openMaps = () => {
@@ -196,7 +199,7 @@ export default function AmbulanciaScreen() {
   return (
     <ScrollView style={styles.container} contentContainerStyle={{ paddingTop: insets.top, paddingBottom: insets.bottom + SPACING.xl }}>
       <View style={styles.headerRow}>
-        <Pressable onPress={() => router.back()} style={styles.backButton}>
+        <Pressable accessibilityRole="button" accessibilityLabel="Volver" onPress={goBack} style={styles.backButton}>
           <MaterialCommunityIcons name="arrow-left" size={24} color={COLORS.textPrimary} />
         </Pressable>
         <Text style={styles.headerTitle}>{IS_DEMO ? 'Ambulancia · Simulación' : 'Mi Ambulancia'}</Text>
@@ -248,8 +251,9 @@ export default function AmbulanciaScreen() {
             <MaterialCommunityIcons name="hospital-marker" size={32} color={COLORS.error} />
           </View>
 
-          {/* Marcador de ambulancia con animación suave */}
+          {/* Pulso y desplazamiento usan el mismo motor en cada plataforma. */}
           <Animated.View
+            testID="ambulance-marker"
             style={[
               styles.ambulanceMarker,
               {
@@ -287,12 +291,14 @@ export default function AmbulanciaScreen() {
           </View>
         </View>
 
-        {!simulating && currentStatus !== 'en_hospital' && (
+        {waypoints.length >= 2 && (
           <Pressable style={({ pressed }) => [styles.simulateButton, pressed && { opacity: 0.8 }]} onPress={startSimulation}>
             <MaterialCommunityIcons name="play-circle" size={20} color="#FFF" />
-            <Text style={styles.simulateButtonText}>Simular recorrido</Text>
+            <Text style={styles.simulateButtonText}>{simulating ? 'Reiniciar recorrido' : currentStatus === 'en_hospital' ? 'Repetir simulación' : 'Simular recorrido'}</Text>
           </Pressable>
         )}
+
+        {waypoints.length < 2 && <Text style={styles.unavailableText}>Ruta no disponible para la simulación.</Text>}
 
         {currentStatus === 'en_hospital' && (
           <View style={styles.arrivedBanner}>
@@ -306,6 +312,7 @@ export default function AmbulanciaScreen() {
           <Text style={styles.mapsLinkText}>Abrir en Google Maps</Text>
         </Pressable>}
 
+        <Text style={styles.addressText}>Simulación ilustrativa. No representa un transporte real.</Text>
         <Text style={styles.addressText}>Calle Piqueras 98, 26006 Logroño, La Rioja</Text>
       </View>
     </ScrollView>
