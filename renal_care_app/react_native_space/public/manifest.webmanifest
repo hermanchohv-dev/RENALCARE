@@ -1,0 +1,13 @@
+{
+  "id": "/",
+  "name": "RenalCare · Demo sin conexión",
+  "short_name": "RenalCare Demo",
+  "description": "Demostración con pacientes ficticios. Sin atención médica ni conexión a un hospital.",
+  "lang": "es",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#0D9488",
+  "icons": [{ "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }]
+}

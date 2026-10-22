@@ -5,6 +5,7 @@ import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { usePatientsControllerGetAmbulance } from '@/src/api/generated/api';
 import { COLORS, SPACING, RADIUS } from '@/src/constants/theme';
+import { IS_DEMO } from '@/src/api/customFetch';
 import { LoadingScreen } from '@/src/components/LoadingScreen';
 
 const { width: screenWidth } = Dimensions.get('window');
@@ -152,7 +153,7 @@ export default function AmbulanciaScreen() {
           <Pressable onPress={() => router.back()} style={styles.backButton}>
             <MaterialCommunityIcons name="arrow-left" size={24} color={COLORS.textPrimary} />
           </Pressable>
-          <Text style={styles.headerTitle}>Mi Ambulancia</Text>
+          <Text style={styles.headerTitle}>{IS_DEMO ? 'Ambulancia · Simulación' : 'Mi Ambulancia'}</Text>
         </View>
         <View style={styles.unavailableContainer}>
           <MaterialCommunityIcons name="ambulance" size={64} color={COLORS.textMuted} />
@@ -198,7 +199,7 @@ export default function AmbulanciaScreen() {
         <Pressable onPress={() => router.back()} style={styles.backButton}>
           <MaterialCommunityIcons name="arrow-left" size={24} color={COLORS.textPrimary} />
         </Pressable>
-        <Text style={styles.headerTitle}>Mi Ambulancia</Text>
+        <Text style={styles.headerTitle}>{IS_DEMO ? 'Ambulancia · Simulación' : 'Mi Ambulancia'}</Text>
       </View>
 
       {/* Visualización de ruta centrada en Logroño */}
@@ -300,10 +301,10 @@ export default function AmbulanciaScreen() {
           </View>
         )}
 
-        <Pressable style={styles.mapsLink} onPress={openMaps}>
+        {!IS_DEMO && <Pressable style={styles.mapsLink} onPress={openMaps}>
           <MaterialCommunityIcons name="google-maps" size={20} color={COLORS.secondary} />
           <Text style={styles.mapsLinkText}>Abrir en Google Maps</Text>
-        </Pressable>
+        </Pressable>}
 
         <Text style={styles.addressText}>Calle Piqueras 98, 26006 Logroño, La Rioja</Text>
       </View>

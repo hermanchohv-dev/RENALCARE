@@ -4,11 +4,16 @@
  * — orval overwrites it on every codegen run.
  */
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { createDemoApi, DEMO_TOKEN_KEY } from '../demo/api';
+
+export const IS_DEMO = process.env.EXPO_PUBLIC_DEMO_MODE === 'true';
+export const AUTH_TOKEN_KEY = IS_DEMO ? DEMO_TOKEN_KEY : (process.env.EXPO_PUBLIC_AUTH_TOKEN_KEY ?? 'auth_token');
+const demoRequest = createDemoApi(AsyncStorage);
 
 // Strip trailing slash — EXPO_PUBLIC_API_URL sometimes ships with one,
 // and "host//api/foo" trips NestJS routing.
 const BASE_URL = (process.env.EXPO_PUBLIC_API_URL ?? 'http://localhost:3000').replace(/\/+$/, '');
-const TOKEN_KEY = process.env.EXPO_PUBLIC_AUTH_TOKEN_KEY ?? 'auth_token';
+const TOKEN_KEY = AUTH_TOKEN_KEY;
 
 export type ErrorType<Error> = Error;
 export type BodyType<BodyData> = BodyData;
@@ -40,6 +45,7 @@ export async function customFetch<T>(
   url: string,
   options: RequestInit = {},
 ): Promise<T> {
+  if (IS_DEMO) return demoRequest<T>(url, options);
   // Ensure exactly one slash between BASE_URL and url.
   const fullUrl = url.startsWith('http')
     ? url

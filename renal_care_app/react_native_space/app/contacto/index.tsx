@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useContactControllerCreate, useContactControllerList } from '@/src/api/generated/api';
 import { COLORS, SPACING, RADIUS, GRADIENT_PRIMARY } from '@/src/constants/theme';
 import { LinearGradient } from 'expo-linear-gradient';
+import { IS_DEMO } from '@/src/api/customFetch';
 import { LoadingScreen } from '@/src/components/LoadingScreen';
 
 export default function ContactoScreen() {
@@ -47,7 +48,7 @@ export default function ContactoScreen() {
           <Pressable onPress={() => router.back()} style={styles.backButton}>
             <MaterialCommunityIcons name="arrow-left" size={24} color={COLORS.textPrimary} />
           </Pressable>
-          <Text style={styles.headerTitle}>Contacto Médico</Text>
+          <Text style={styles.headerTitle}>{IS_DEMO ? 'Contacto · Simulación' : 'Contacto Médico'}</Text>
         </View>
 
         {/* Info Card */}
@@ -61,17 +62,17 @@ export default function ContactoScreen() {
           </View>
           <View style={styles.infoRow}>
             <MaterialCommunityIcons name="email-outline" size={20} color={COLORS.secondary} />
-            <Text style={styles.infoEmail}>contactonefrologia@riojasalud.es</Text>
+            <Text style={styles.infoEmail}>{IS_DEMO ? 'Sin destinatario real' : 'contactonefrologia@riojasalud.es'}</Text>
           </View>
           <View style={styles.infoRow}>
             <MaterialCommunityIcons name="clock-outline" size={20} color={COLORS.accent} />
-            <Text style={styles.infoSchedule}>Respuestas en horario de 08:00 a 15:00h</Text>
+            <Text style={styles.infoSchedule}>{IS_DEMO ? 'Las consultas no se envían ni reciben respuesta' : 'Respuestas en horario de 08:00 a 15:00h'}</Text>
           </View>
         </View>
 
         {/* Form */}
         <View style={styles.card}>
-          <Text style={styles.formTitle}>Nueva Consulta</Text>
+          <Text style={styles.formTitle}>{IS_DEMO ? 'Consulta ficticia · No escribas datos reales' : 'Nueva Consulta'}</Text>
 
           {!!error && (
             <View style={styles.errorBanner}>
@@ -103,7 +104,7 @@ export default function ContactoScreen() {
               ) : (
                 <>
                   <MaterialCommunityIcons name="send" size={20} color="#FFF" />
-                  <Text style={styles.sendButtonText}>Enviar Consulta</Text>
+                  <Text style={styles.sendButtonText}>{IS_DEMO ? 'Guardar simulación' : 'Enviar Consulta'}</Text>
                 </>
               )}
             </LinearGradient>
@@ -133,8 +134,8 @@ export default function ContactoScreen() {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <MaterialCommunityIcons name="check-circle" size={64} color={COLORS.success} />
-            <Text style={styles.modalTitle}>Consulta Enviada</Text>
-            <Text style={styles.modalText}>Tu consulta ha sido enviada correctamente. Recibirás respuesta en horario de 08:00 a 15:00h.</Text>
+            <Text style={styles.modalTitle}>{IS_DEMO ? 'Simulación guardada' : 'Consulta Enviada'}</Text>
+            <Text style={styles.modalText}>{IS_DEMO ? 'Guardada solo en este dispositivo. No se ha enviado a ningún profesional ni al hospital.' : 'Tu consulta ha sido enviada correctamente. Recibirás respuesta en horario de 08:00 a 15:00h.'}</Text>
             <Pressable style={styles.modalButton} onPress={() => setShowSuccess(false)}>
               <Text style={styles.modalButtonText}>Aceptar</Text>
             </Pressable>

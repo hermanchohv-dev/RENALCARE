@@ -20,6 +20,7 @@ function getStatusColor(status?: string): string {
 }
 
 function getStatusLabel(status?: string): string {
+  if (status === 'demo') return 'Ejemplo';
   if (status === 'normal') return 'Normal';
   if (status === 'alert') return 'Atención';
   if (status === 'critical') return 'Crítico';

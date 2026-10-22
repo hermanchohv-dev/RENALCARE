@@ -26,3 +26,8 @@ __MACOSX/
 *.before-*
 .abacus*
 Uploads/
+
+# Demo PWA exportada
+dist-pwa/
+playwright-report/
+test-results/

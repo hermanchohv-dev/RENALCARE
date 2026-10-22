@@ -1,0 +1,351 @@
+{
+  "metadata": {
+    "titulo": "Recomendaciones Dietéticas para Pacientes Renales",
+    "institucion": "Hospital Universitario San Pedro de Logroño",
+    "version": "1.0",
+    "fecha_actualizacion": "2026-06-21",
+    "aviso_legal": "Esta información tiene fines educativos. Cada paciente debe seguir las indicaciones individualizadas de su nefrólogo y nutricionista, ya que las necesidades varían según peso, analíticas, comorbilidades y evolución clínica.",
+    "fuentes": [
+      "Guías KDOQI 2020 (Clinical Practice Guideline for Nutrition in CKD)",
+      "Sociedad Española de Nefrología (S.E.N.)",
+      "European Renal Best Practice (ERBP)",
+      "National Kidney Foundation (NKF)"
+    ]
+  },
+  "modalidades": {
+    "hemodialisis": {
+      "nombre": "Hemodiálisis",
+      "descripcion": "Pacientes en programa de hemodiálisis (habitualmente 3 sesiones semanales de 4 horas). La dieta busca controlar la acumulación de líquidos, potasio, fósforo y sodio entre sesiones, manteniendo un adecuado aporte proteico-calórico.",
+      "restriccion_liquidos": {
+        "cantidad_diaria_ml": "500-800 ml + diuresis residual del paciente",
+        "ganancia_peso_interdialisis_maxima": "No superar el 4-4,5% del peso seco (idealmente 2-3%)",
+        "incluye": [
+          "Agua, infusiones, café, leche",
+          "Sopas, caldos, gelatinas, helados, sorbetes",
+          "Frutas muy acuosas (sandía, melón, naranja)",
+          "Salsas y guisos caldosos"
+        ],
+        "consejos": [
+          "Usar vasos pequeños y repartir la ingesta a lo largo del día",
+          "Chupar cubitos de hielo o trozos de limón congelado para calmar la sed",
+          "Enjuagues bucales fríos sin tragar",
+          "Evitar ambientes calurosos y comidas muy saladas que aumentan la sed",
+          "Pesarse diariamente a la misma hora"
+        ]
+      },
+      "recomendaciones_proteinas": {
+        "cantidad_g_kg_peso_dia": "1,1 - 1,2 g/kg/día",
+        "porcentaje_alto_valor_biologico": ">= 50%",
+        "fuentes_recomendadas": [
+          "Clara de huevo (proteína de referencia, bajo en fósforo)",
+          "Carnes magras (pollo, pavo, ternera) en raciones controladas",
+          "Pescado blanco (merluza, lenguado, rape)",
+          "Pescado azul con moderación (atún, sardina)",
+          "Quesos frescos bajos en sal en pequeñas cantidades"
+        ],
+        "notas": "Cada sesión de diálisis produce pérdida de aminoácidos, por lo que el aporte proteico debe ser mayor que en prediálisis."
+      },
+      "restriccion_potasio": {
+        "limite_diario_mg": "2000-2500 mg/día (50-65 mmol)",
+        "alimentos_altos_evitar": [
+          "Plátano, kiwi, aguacate, melón, albaricoque, cerezas, uvas",
+          "Frutos secos (nueces, almendras, pistachos, cacahuetes)",
+          "Patata y boniato sin remojar",
+          "Espinacas, acelgas, tomate frito, champiñones",
+          "Legumbres no remojadas",
+          "Chocolate, cacao, café soluble",
+          "Sal de régimen o 'sal sin sodio' (contiene cloruro potásico)",
+          "Zumos naturales concentrados"
+        ],
+        "tecnicas_culinarias": [
+          "Doble cocción: trocear, remojar 12-24h cambiando el agua, luego cocer y desechar el caldo",
+          "Verduras en conserva escurridas (menos potasio que las frescas)",
+          "Fruta en almíbar bien escurrida como alternativa a la fresca",
+          "Evitar el microondas y la olla a presión, que conservan más potasio"
+        ]
+      },
+      "restriccion_fosforo": {
+        "limite_diario_mg": "800-1000 mg/día",
+        "alimentos_altos_evitar": [
+          "Lácteos en gran cantidad (leche, yogur, quesos curados)",
+          "Vísceras (hígado, riñones, sesos)",
+          "Marisco, sardinas en lata, pescados en conserva",
+          "Yema de huevo en exceso",
+          "Frutos secos, legumbres y cereales integrales",
+          "Chocolate, cacao, bebidas de cola, cerveza",
+          "Embutidos y alimentos procesados con aditivos (E-338 a E-452, fosfatos)"
+        ],
+        "consejos": [
+          "Leer etiquetas y evitar aditivos que contengan 'fosfato' o 'PHOS'",
+          "El fósforo de aditivos se absorbe casi al 100%, mucho más que el natural",
+          "Tomar los quelantes del fósforo SIEMPRE con las comidas, según prescripción"
+        ]
+      },
+      "restriccion_sodio": {
+        "limite_diario_mg": "1500-2000 mg/día (equivalente a 4-5 g de sal)",
+        "alimentos_evitar": [
+          "Sal de mesa, sal marina y caldos concentrados (pastillas)",
+          "Embutidos, jamón curado, bacon, salchichas",
+          "Quesos curados y semicurados",
+          "Conservas y enlatados (atún, aceitunas, encurtidos)",
+          "Salsas comerciales (soja, kétchup, mostaza)",
+          "Snacks salados, patatas fritas de bolsa, frutos secos salados",
+          "Comida rápida y precocinados",
+          "Aguas con gas con alto contenido en sodio"
+        ],
+        "alternativas": [
+          "Especias y hierbas aromáticas: orégano, tomillo, romero, albahaca, comino, pimentón dulce",
+          "Ajo, cebolla, limón, vinagre para potenciar el sabor",
+          "Aceite de oliva virgen extra"
+        ]
+      },
+      "alimentos_recomendados": [
+        "Arroz blanco, pasta, sémola, pan sin sal",
+        "Verduras de bajo potasio tras doble cocción (judía verde, calabacín, pepino, zanahoria, cebolla, pimiento)",
+        "Frutas permitidas: manzana, pera, piña natural, fresas, mandarina, sandía en cantidad controlada",
+        "Clara de huevo, carnes magras frescas, pescado blanco",
+        "Aceite de oliva virgen extra como grasa principal",
+        "Pan blanco sin sal, galletas tipo 'María' sin sal"
+      ],
+      "alimentos_a_evitar": [
+        "Sal y alimentos salados o procesados",
+        "Frutos secos y semillas",
+        "Chocolate, cacao, productos integrales",
+        "Bebidas con cola y cerveza",
+        "Frutas y verduras prohibidas (plátano, kiwi, aguacate, espinacas, tomate frito)",
+        "Vísceras y embutidos",
+        "Sustitutos de la sal con potasio"
+      ],
+      "consejos_practicos": [
+        "Realizar 4-5 comidas al día en raciones moderadas",
+        "Pesarse a diario en ayunas para controlar la ganancia hídrica",
+        "Llevar un diario de líquidos los primeros meses",
+        "Tomar los quelantes de fósforo con cada comida principal",
+        "Llevar siempre un menú adaptado cuando se coma fuera de casa",
+        "Acudir a la consulta de nutrición renal al menos cada 3-6 meses",
+        "Vigilar el estreñimiento (favorece hiperpotasemia): fibra controlada y buena hidratación dentro del límite"
+      ]
+    },
+    "dialisis_peritoneal": {
+      "nombre": "Diálisis Peritoneal",
+      "descripcion": "Pacientes en diálisis peritoneal (DPCA o DPA). La dieta es más flexible que en hemodiálisis en cuanto a potasio y líquidos, pero requiere mayor aporte proteico (por pérdida a través del peritoneo) y vigilar el aporte calórico procedente de la glucosa del líquido dialítico.",
+      "restriccion_liquidos": {
+        "cantidad_diaria_ml": "Generalmente más permisiva: diuresis residual + 800-1000 ml, ajustado por ultrafiltración",
+        "incluye": [
+          "Todos los líquidos y alimentos con alto contenido en agua",
+          "Considerar la ultrafiltración diaria conseguida con los intercambios"
+        ],
+        "consejos": [
+          "Pesarse a diario, vigilar edemas y tensión arterial",
+          "Ajustar la concentración del líquido peritoneal con el equipo médico si hay sobrecarga",
+          "Reducir sal antes que reducir agua para controlar la sed"
+        ]
+      },
+      "recomendaciones_proteinas": {
+        "cantidad_g_kg_peso_dia": "1,2 - 1,3 g/kg/día (puede llegar a 1,5 g/kg en peritonitis)",
+        "porcentaje_alto_valor_biologico": ">= 50%",
+        "fuentes_recomendadas": [
+          "Clara de huevo (varias raciones al día)",
+          "Carnes magras: pollo, pavo, conejo, ternera",
+          "Pescados blancos y azules con moderación",
+          "Huevo entero (1 al día habitualmente permitido)"
+        ],
+        "notas": "Las pérdidas proteicas peritoneales son de 5-15 g/día y aumentan en peritonitis. Es la modalidad de diálisis con mayor requerimiento proteico."
+      },
+      "restriccion_potasio": {
+        "limite_diario_mg": "Habitualmente NO restringido o restricción leve (3000-4000 mg/día)",
+        "notas": "La diálisis peritoneal es continua y elimina potasio de forma constante; en ocasiones aparece HIPOpotasemia y hay que aumentar el aporte.",
+        "vigilancia": [
+          "Si potasio sérico bajo: aumentar frutas y verduras permitidas",
+          "Si potasio elevado (poco frecuente): aplicar técnicas de doble cocción"
+        ]
+      },
+      "restriccion_fosforo": {
+        "limite_diario_mg": "800-1000 mg/día",
+        "alimentos_altos_evitar": [
+          "Lácteos en exceso, quesos curados",
+          "Vísceras, marisco, conservas",
+          "Frutos secos, legumbres con piel, integrales",
+          "Bebidas de cola y cerveza",
+          "Embutidos y procesados con fosfatos añadidos"
+        ],
+        "consejos": [
+          "Quelantes del fósforo con las comidas según prescripción",
+          "Priorizar proteínas con baja relación fósforo/proteína (clara de huevo, pollo, pavo)"
+        ]
+      },
+      "restriccion_sodio": {
+        "limite_diario_mg": "2000-2300 mg/día (5-6 g de sal)",
+        "importancia": "El control del sodio es CLAVE para evitar sed, sobrecarga hídrica y necesidad de líquidos peritoneales hipertónicos (que aportan más glucosa).",
+        "alimentos_evitar": [
+          "Sal añadida, embutidos, conservas, quesos curados",
+          "Salsas comerciales, caldos concentrados",
+          "Aperitivos salados, precocinados, comida rápida"
+        ]
+      },
+      "control_calorias_glucosa": {
+        "descripcion": "El líquido peritoneal aporta entre 100-300 kcal/día como glucosa absorbida.",
+        "recomendaciones": [
+          "Reducir hidratos de carbono simples (azúcar, bollería, refrescos azucarados)",
+          "Vigilar peso, perímetro abdominal y perfil lipídico",
+          "Preferir hidratos de carbono complejos: arroz, pasta, pan",
+          "Aporte calórico total: 30-35 kcal/kg/día, descontando el aporte del dializante"
+        ]
+      },
+      "alimentos_recomendados": [
+        "Clara de huevo, carnes magras, pescado",
+        "Verduras frescas variadas (con menos restricción de potasio)",
+        "Fruta fresca (1-3 piezas al día según potasio sérico)",
+        "Arroz, pasta, pan blanco preferentemente sin sal",
+        "Aceite de oliva virgen extra",
+        "Lácteos en cantidad moderada (1 ración/día)"
+      ],
+      "alimentos_a_evitar": [
+        "Azúcares simples y bollería industrial",
+        "Embutidos, conservas, ahumados",
+        "Quesos curados y muy salados",
+        "Frutos secos en exceso",
+        "Bebidas con cola, cerveza, refrescos azucarados",
+        "Productos procesados con fosfatos"
+      ],
+      "consejos_practicos": [
+        "Repartir las proteínas a lo largo del día (4-5 tomas)",
+        "Higiene rigurosa antes de manipular alimentos y antes de los intercambios",
+        "En caso de peritonitis: aumentar proteínas y mantener hidratación",
+        "Controlar el peso semanalmente y la tensión arterial",
+        "Limitar el azúcar añadido por el aporte calórico del dializante",
+        "Consumir fibra adecuada para evitar estreñimiento (puede afectar al drenaje peritoneal)"
+      ]
+    },
+    "trasplante_renal": {
+      "nombre": "Trasplante Renal",
+      "descripcion": "Pacientes con trasplante renal funcionante. La dieta es mucho más flexible y se orienta a proteger el injerto, controlar los efectos secundarios de los inmunosupresores (hipertensión, diabetes, dislipemia, osteoporosis) y prevenir infecciones alimentarias.",
+      "fases": {
+        "post_trasplante_inmediato": "Primeros 1-3 meses: control estricto de sodio, azúcares, higiene alimentaria y dosis altas de inmunosupresores.",
+        "mantenimiento": "A partir del 3er mes: dieta saludable tipo mediterránea adaptada al filtrado glomerular y a comorbilidades."
+      },
+      "restriccion_liquidos": {
+        "cantidad_diaria_ml": "2000-3000 ml/día (HIDRATACIÓN ABUNDANTE)",
+        "notas": "Salvo indicación contraria, se recomienda beber abundante agua para proteger el injerto y prevenir infecciones urinarias.",
+        "consejos": [
+          "Repartir la ingesta a lo largo del día",
+          "Aumentar en caso de calor, ejercicio o fiebre",
+          "Preferir agua y evitar bebidas azucaradas"
+        ]
+      },
+      "recomendaciones_proteinas": {
+        "fase_aguda_g_kg_dia": "1,3 - 1,5 g/kg/día durante las primeras 4-6 semanas (catabolismo por corticoides)",
+        "fase_mantenimiento_g_kg_dia": "0,8 - 1,0 g/kg/día",
+        "fuentes_recomendadas": [
+          "Carnes magras, pescado, huevo",
+          "Lácteos desnatados (controlar fósforo y calorías)",
+          "Legumbres bien cocinadas (en fase de mantenimiento)"
+        ]
+      },
+      "restriccion_potasio": {
+        "limite_diario_mg": "Habitualmente NO restringido si el injerto funciona",
+        "vigilancia": "Algunos inmunosupresores (tacrolimus, ciclosporina) pueden producir hiperpotasemia. Si aparece, evitar temporalmente plátano, kiwi, aguacate, tomate, frutos secos y aplicar doble cocción."
+      },
+      "restriccion_fosforo": {
+        "limite_diario_mg": "No restringido en general; vigilar HIPOfosfatemia frecuente en post-trasplante inmediato",
+        "consejos": [
+          "Puede ser necesario AUMENTAR el fósforo en las primeras semanas (lácteos, pescado, huevo)",
+          "Suplementación si lo indica el equipo médico"
+        ]
+      },
+      "restriccion_sodio": {
+        "limite_diario_mg": "2000-2300 mg/día (5-6 g de sal)",
+        "motivo": "Los corticoides e inhibidores de calcineurina favorecen retención de sodio, HTA y edemas.",
+        "alimentos_evitar": [
+          "Sal añadida, embutidos, salazones, conservas",
+          "Quesos curados, snacks salados, precocinados",
+          "Salsas y caldos comerciales"
+        ]
+      },
+      "control_glucosa_lipidos": {
+        "descripcion": "Alta prevalencia de diabetes post-trasplante (NODAT) y dislipemia por inmunosupresores.",
+        "recomendaciones": [
+          "Reducir azúcares simples y harinas refinadas",
+          "Hidratos de carbono complejos e integrales (si potasio normal)",
+          "Grasas saludables: aceite de oliva, pescado azul, frutos secos sin sal",
+          "Limitar grasas saturadas y trans (bollería, embutidos, fritos)",
+          "Patrón de dieta mediterránea como referencia"
+        ]
+      },
+      "seguridad_alimentaria": {
+        "importancia": "El tratamiento inmunosupresor aumenta el riesgo de infecciones por alimentos.",
+        "alimentos_evitar_estrictamente": [
+          "Carnes y pescados crudos o poco hechos (sushi, carpaccio, steak tartar)",
+          "Huevos crudos o poco cuajados (mahonesas caseras, tiramisú casero)",
+          "Lácteos no pasteurizados y quesos con moho (roquefort, brie sin pasteurizar)",
+          "Embutidos crudos curados artesanales sin control sanitario",
+          "Marisco crudo, ostras, ahumados sin envasado al vacío",
+          "Frutas y verduras sin lavar adecuadamente",
+          "Patés frescos refrigerados",
+          "Pomelo y zumo de pomelo (interacciona con inmunosupresores)",
+          "Granada, carambola y zumo de granada (posible interacción)",
+          "Hierbas medicinales y suplementos sin consultar (hipérico, equinácea, etc.)"
+        ],
+        "normas_higiene": [
+          "Lavar manos antes de cocinar y comer",
+          "Lavar y desinfectar frutas y verduras (lejía apta para alimentos)",
+          "Cocinar carnes, pescados y huevos COMPLETAMENTE",
+          "Respetar cadena de frío y fechas de caducidad",
+          "Evitar buffets libres y alimentos de origen dudoso",
+          "Agua embotellada o hervida en viajes"
+        ]
+      },
+      "alimentos_recomendados": [
+        "Frutas y verduras frescas bien lavadas (excepto pomelo y granada)",
+        "Cereales integrales si filtrado y potasio lo permiten",
+        "Legumbres 2-3 veces por semana",
+        "Pescado 3-4 veces por semana (2 de pescado azul)",
+        "Carnes magras y huevo bien cocinados",
+        "Lácteos desnatados y pasteurizados",
+        "Aceite de oliva virgen extra",
+        "Frutos secos naturales sin sal (un puñado al día)"
+      ],
+      "alimentos_a_evitar": [
+        "POMELO y zumo de pomelo (interacción farmacológica grave)",
+        "Granada y carambola",
+        "Alimentos crudos o poco cocinados",
+        "Quesos sin pasteurizar y con moho",
+        "Embutidos crudos artesanales",
+        "Bebidas alcohólicas en exceso",
+        "Bollería industrial, azúcares simples, bebidas azucaradas",
+        "Sal en exceso y ultraprocesados",
+        "Hierbas medicinales no autorizadas (hipérico/St. John's Wort)"
+      ],
+      "consejos_practicos": [
+        "Realizar 4-5 comidas equilibradas al día",
+        "Beber 2-3 litros de agua diarios salvo contraindicación",
+        "Actividad física regular adaptada (caminar, natación)",
+        "Control de peso para evitar obesidad post-trasplante",
+        "NO tomar pomelo bajo ninguna forma mientras se reciba inmunosupresión",
+        "Consultar SIEMPRE antes de tomar suplementos, plantas medicinales o productos 'naturales'",
+        "Higiene alimentaria estricta especialmente los primeros 6 meses",
+        "Revisiones periódicas con nefrología y nutrición",
+        "Vacunaciones al día (no vivas atenuadas)",
+        "Protección solar estricta (mayor riesgo de cáncer de piel con inmunosupresores)"
+      ]
+    }
+  },
+  "recomendaciones_generales": {
+    "comunes_a_todas_las_modalidades": [
+      "Individualización: la dieta debe ajustarse a las analíticas y al estado clínico de cada paciente",
+      "Leer siempre el etiquetado nutricional (sodio, fósforo añadido, azúcares)",
+      "Cocinar en casa siempre que sea posible",
+      "Mantener un peso adecuado y actividad física regular adaptada",
+      "Evitar el tabaco y limitar el alcohol",
+      "Acudir a las revisiones con nefrología, nutrición y enfermería",
+      "Ante dudas, contactar con el equipo de la Unidad de Nefrología del Hospital San Pedro"
+    ],
+    "signos_alarma_consultar": [
+      "Ganancia rápida de peso o edemas",
+      "Disminución brusca de la diuresis (en trasplantados y DP)",
+      "Calambres, debilidad muscular o palpitaciones (alteración del potasio)",
+      "Fiebre, líquido peritoneal turbio (DP)",
+      "Vómitos, diarrea prolongada o falta de apetito mantenida"
+    ]
+  }
+}

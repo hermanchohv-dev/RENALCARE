@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Pressable, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { IS_DEMO } from '@/src/api/customFetch';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { COLORS, SPACING, RADIUS, GRADIENT_PRIMARY } from '@/src/constants/theme';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -53,7 +54,7 @@ export default function LoginScreen() {
           <Text style={styles.logoText}>RENAL-CARE</Text>
         </View>
 
-        <Text style={styles.heading}>Iniciar Sesión</Text>
+        <Text style={styles.heading}>{IS_DEMO ? 'Seleccionar perfil ficticio' : 'Iniciar Sesión'}</Text>
 
         <View style={styles.card}>
           {!!error && (
@@ -94,14 +95,14 @@ export default function LoginScreen() {
 
           <Pressable onPress={() => handleLogin()} disabled={loading} style={({ pressed }) => [styles.loginButton, pressed && styles.pressed]}>
             <LinearGradient colors={GRADIENT_PRIMARY} style={styles.gradientButton} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
-              {loading ? <ActivityIndicator color="#FFF" /> : <Text style={styles.loginButtonText}>Iniciar Sesión</Text>}
+              {loading ? <ActivityIndicator color="#FFF" /> : <Text style={styles.loginButtonText}>{IS_DEMO ? 'Seleccionar perfil ficticio' : 'Iniciar Sesión'}</Text>}
             </LinearGradient>
           </Pressable>
         </View>
 
         <View style={styles.demoSection}>
           <View style={styles.demoBadge}>
-            <Text style={styles.demoBadgeText}>Versión Demo</Text>
+            <Text style={styles.demoBadgeText}>{IS_DEMO ? 'Demo sin conexión · Datos ficticios' : 'Versión Demo'}</Text>
           </View>
           <Text style={styles.demoLabel}>Acceso rápido:</Text>
           {DEMO_ACCOUNTS.map((acc) => (
